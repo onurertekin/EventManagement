@@ -18,12 +18,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
     <Folder Include="Middlewares\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Contract\Contract.csproj" />
     <ProjectReference Include="..\DatabaseModel\DatabaseModel.csproj" />
+    <ProjectReference Include="..\DomainService\DomainService.csproj" />
   </ItemGroup>
 
 </Project>

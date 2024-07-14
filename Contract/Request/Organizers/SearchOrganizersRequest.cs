@@ -1,4 +1,4 @@
-﻿namespace Contract.Request
+﻿namespace Contract.Request.Organizers
 {
     public class SearchOrganizersRequest
     {

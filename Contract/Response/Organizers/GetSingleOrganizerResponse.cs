@@ -1,7 +1,8 @@
-﻿namespace Contract.Request
+﻿namespace Contract.Response.Organizers
 {
-    public class CreateOrganizerRequest
+    public class GetSingleOrganizerResponse
     {
+        public int id { get; set; }
         public string firstName { get; set; }
         public string lastName { get; set; }
         public string email { get; set; }

@@ -1,6 +1,7 @@
 
 using Castle.Core.Configuration;
 using DatabaseModel;
+using DomainService.Operations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -33,6 +34,10 @@ namespace EventManagement
 
             //HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
 
+            #endregion
+
+            #region Registirations
+            builder.Services.AddTransient<OrganizerOperations>();
             #endregion
 
 
