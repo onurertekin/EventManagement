@@ -1,0 +1,11 @@
+﻿# Adds a new migration. #
+add-migration Initial -OutputDir "Migrations/MsSql" -Context MainDbContext
+
+# Updates the database to the last migration or to a specified migration. #
+update-database -Context MainDbContext
+
+# Rollback migration. #
+update-database -Context MainDbContext 0
+
+# Remove migration file from project #
+remove-migration -Context MainDbContext

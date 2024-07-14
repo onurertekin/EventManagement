@@ -1,11 +1,21 @@
 
+using Castle.Core.Configuration;
+using DatabaseModel;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+
 namespace EventManagement
 {
     public class Program
     {
         public static void Main(string[] args)
         {
+
+            var configurationBuilder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
+            var configuration = configurationBuilder.Build();
+
             var builder = WebApplication.CreateBuilder(args);
+            builder.WebHost.UseConfiguration(configuration);
 
             // Add services to the container.
 
@@ -13,6 +23,19 @@ namespace EventManagement
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+
+            #region EntityFramework
+
+            string connectionString = configuration.GetValue<string>("ConnectionStrings:DefaultConnection");
+            builder.Services.AddDbContext<MainDbContext>(options =>
+                options.UseSqlServer(connectionString));
+
+            //HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
+
+            #endregion
+
+
 
             var app = builder.Build();
 
