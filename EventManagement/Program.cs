@@ -40,6 +40,7 @@ namespace EventManagement
             builder.Services.AddTransient<OrganizerOperations>();
             builder.Services.AddTransient<EventOperations>();
             builder.Services.AddTransient<ParticipantOperations>();
+            builder.Services.AddTransient<AuthenticationOperations>();
             #endregion
 
 
