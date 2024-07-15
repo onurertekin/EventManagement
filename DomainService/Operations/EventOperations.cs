@@ -1,18 +1,14 @@
 ﻿using DatabaseModel;
 using DatabaseModel.Entities;
 using DomainService.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DomainService.Base;
 
 namespace DomainService.Operations
 {
-    public class EventOperations
+    public class EventOperations : DbContextHelper
     {
         private readonly MainDbContext mainDbContext;
-        public EventOperations(MainDbContext mainDbContext)
+        public EventOperations(MainDbContext mainDbContext) : base(mainDbContext)
         {
             this.mainDbContext = mainDbContext;
         }
@@ -42,7 +38,7 @@ namespace DomainService.Operations
         {
             var _event = mainDbContext.Events.Where(x => x.Id == id).SingleOrDefault();
             if (_event == null)
-                throw new BusinessException(404,"Event bulunamadı.");
+                throw new BusinessException(404, "Event bulunamadı.");
 
             return _event;
         }
@@ -64,8 +60,7 @@ namespace DomainService.Operations
             _event.EndDate = endDate;
             _event.CreatedOn = DateTime.Now;
 
-            mainDbContext.Events.Add(_event);
-            mainDbContext.SaveChanges();
+            SaveEntity(_event);
         }
 
         public void Update(int id, int organizerId, string name, string description, string location, DateTime startDate, DateTime endDate)
@@ -85,7 +80,7 @@ namespace DomainService.Operations
             _event.EndDate = endDate;
             _event.UpdatedOn = DateTime.Now;
 
-            mainDbContext.SaveChanges();
+            UpdateEntity(_event);
         }
         public void Delete(int id)
         {
@@ -93,12 +88,11 @@ namespace DomainService.Operations
 
             var _event = mainDbContext.Events.Where(x => x.Id == id).SingleOrDefault();
             if (_event == null)
-                throw new BusinessException(404,"Silincek kayıt bulunamadı.");
+                throw new BusinessException(404, "Silincek kayıt bulunamadı.");
 
             #endregion
 
-            mainDbContext.Events.Remove(_event);
-            mainDbContext.SaveChanges();
+            DeleteEntity(_event);
 
         }
     }

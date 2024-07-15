@@ -1,12 +1,13 @@
 ﻿using DatabaseModel;
 using DatabaseModel.Entities;
+using DomainService.Base;
 
 namespace DomainService.Operations
 {
-    public class ParticipantOperations
+    public class ParticipantOperations : DbContextHelper
     {
         private MainDbContext mainDbContext;
-        public ParticipantOperations(MainDbContext mainDbContext)
+        public ParticipantOperations(MainDbContext mainDbContext) : base(mainDbContext)
         {
             this.mainDbContext = mainDbContext;
         }
@@ -42,7 +43,7 @@ namespace DomainService.Operations
             return participant;
         }
 
-        public void Create(int eventId, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate,string password)
+        public void Create(int eventId, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate, string password)
         {
             #region Validations
 
@@ -67,11 +68,10 @@ namespace DomainService.Operations
             participant.RegisteredDate = registeredDate;
             participant.Password = password;
 
-            mainDbContext.Participants.Add(participant);
-            mainDbContext.SaveChanges();
+            SaveEntity(participant);
         }
 
-        public void Update(int id, int eventId, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate,string password)
+        public void Update(int id, int eventId, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate, string password)
         {
             #region Validations
             var participant = mainDbContext.Participants.Where(x => x.Id == id).SingleOrDefault();
@@ -96,7 +96,7 @@ namespace DomainService.Operations
             participant.RegisteredDate = registeredDate;
             participant.Password = password;
 
-            mainDbContext.SaveChanges();
+            UpdateEntity(participant);
 
         }
 
@@ -106,8 +106,7 @@ namespace DomainService.Operations
             if (participant == null)
                 throw new Exception("Silinecek katılımcı bulunamadı.");
 
-            mainDbContext.Participants.Remove(participant);
-            mainDbContext.SaveChanges();
+            DeleteEntity(participant);
         }
 
     }

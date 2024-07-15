@@ -1,14 +1,15 @@
 ﻿using DatabaseModel;
 using DatabaseModel.Entities;
+using DomainService.Base;
 using DomainService.Exceptions;
 
 namespace DomainService.Operations
 {
-    public class OrganizerOperations
+    public class OrganizerOperations : DbContextHelper
     {
         private readonly MainDbContext mainDbContext;
 
-        public OrganizerOperations(MainDbContext mainDbContext)
+        public OrganizerOperations(MainDbContext mainDbContext) : base(mainDbContext) 
         {
             this.mainDbContext = mainDbContext;
         }
@@ -65,8 +66,7 @@ namespace DomainService.Operations
             organizer.OrganizerName = organizerName;
             organizer.Password = password;
 
-            mainDbContext.Organizers.Add(organizer);
-            mainDbContext.SaveChanges();
+            SaveEntity(organizer);
         }
 
         public void Update(int id, string firstName, string lastName, string email, string phoneNumber, string organizerName,string password)
@@ -86,7 +86,7 @@ namespace DomainService.Operations
             organizer.OrganizerName = organizerName;
             organizer.Password = password;
 
-            mainDbContext.SaveChanges();
+            UpdateEntity(organizer);
         }
 
         public void Delete(int id)
@@ -95,8 +95,7 @@ namespace DomainService.Operations
             if (organizer == null)
                 throw new BusinessException(404,"Silinecek kayıt bulunamadı.");
 
-            mainDbContext.Organizers.Remove(organizer);
-            mainDbContext.SaveChanges();
+            DeleteEntity(organizer);
         }
     }
 }

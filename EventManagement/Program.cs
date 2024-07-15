@@ -3,6 +3,7 @@ using Castle.Core.Configuration;
 using DatabaseModel;
 using DomainService.Operations;
 using Host.Helpers.Swagger;
+using Host.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -42,15 +43,15 @@ namespace EventManagement
             builder.Services.AddDbContext<MainDbContext>(options =>
                 options.UseSqlServer(connectionString));
 
-            //HibernatingRhinos.Profiler.Appender.EntityFramework.EntityFrameworkProfiler.Initialize();
-
             #endregion
 
             #region Registirations
+
             builder.Services.AddTransient<OrganizerOperations>();
             builder.Services.AddTransient<EventOperations>();
             builder.Services.AddTransient<ParticipantOperations>();
             builder.Services.AddTransient<AuthenticationOperations>();
+
             #endregion
 
 
@@ -63,6 +64,13 @@ namespace EventManagement
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            #region Middlewares
+
+            app.UseMiddleware<ExceptionMiddleware>();
+            app.UseMiddleware<TransactionMiddleware>();
+
+            #endregion
 
             app.UseHttpsRedirection();
 
