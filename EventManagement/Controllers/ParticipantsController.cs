@@ -18,7 +18,7 @@ namespace Host.Controllers
         [HttpGet]
         public ActionResult<SearchParticipantResponse> Search([FromQuery] SearchParticipantRequest request)
         {
-            var participants = participantOperations.Search(request.eventId, request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate);
+            var participants = participantOperations.Search(request.eventId, request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate, request.password);
             SearchParticipantResponse response = new SearchParticipantResponse();
             foreach (var participant in participants)
             {
@@ -31,6 +31,7 @@ namespace Host.Controllers
                     email = participant.Email,
                     phoneNumber = participant.PhoneNumber,
                     registeredDate = participant.RegisteredDate,
+                    password = participant.Password
                 });
             }
 
@@ -50,6 +51,7 @@ namespace Host.Controllers
             response.email = participant.Email;
             response.phoneNumber = participant.PhoneNumber;
             response.registeredDate = participant.RegisteredDate;
+            response.password = participant.Password;
 
             return response;
 
@@ -58,14 +60,15 @@ namespace Host.Controllers
         [HttpPost]
         public void Create([FromBody] CreateParticipantRequest request)
         {
-            participantOperations.Create(request.eventId, request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate);
+            participantOperations.Create(request.eventId, request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate, request.password);
         }
 
         [HttpPut("{id}")]
         public void Update([FromBody] UpdateParticipantRequest request, int id)
         {
-            participantOperations.Update(id, request.eventId, request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate);
+            participantOperations.Update(id, request.eventId, request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate, request.password);
         }
+
         [HttpDelete("{id}")]
         public void Delete(int id)
         {

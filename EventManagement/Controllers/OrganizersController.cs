@@ -20,7 +20,7 @@ namespace Host.Controllers
         [HttpGet]
         public ActionResult<SearchOrganizersResponse> Search([FromQuery] SearchOrganizersRequest request)
         {
-            var organizers = organizerOperations.Search(request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName);
+            var organizers = organizerOperations.Search(request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName,request.password);
             SearchOrganizersResponse response = new SearchOrganizersResponse();
             foreach (var organizer in organizers)
             {
@@ -31,7 +31,8 @@ namespace Host.Controllers
                     lastName = organizer.LastName,
                     email = organizer.Email,
                     phoneNumber = organizer.PhoneNumber,
-                    organizerName = organizer.OrganizerName
+                    organizerName = organizer.OrganizerName,
+                    password = organizer.Password,
                 });
             }
 
@@ -50,6 +51,7 @@ namespace Host.Controllers
             response.lastName = organizer.LastName;
             response.email = organizer.Email;
             response.organizerName = organizer.OrganizerName;
+            response.password = organizer.Password;
 
             return response;
         }
@@ -57,13 +59,13 @@ namespace Host.Controllers
         [HttpPost]
         public void Create([FromBody] CreateOrganizerRequest request)
         {
-            organizerOperations.Create(request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName);
+            organizerOperations.Create(request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName,request.password);
         }
 
         [HttpPut("{id}")]
         public void Update([FromBody] UpdateOrganizerRequest request, int id)
         {
-            organizerOperations.Update(id, request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName);
+            organizerOperations.Update(id, request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName,request.password);
         }
 
         [HttpDelete("{id}")]

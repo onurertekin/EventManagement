@@ -12,7 +12,7 @@ namespace DomainService.Operations
             this.mainDbContext = mainDbContext;
         }
 
-        public IList<Organizer> Search(string firstName, string lastName, string email, string phoneNumber, string organizerName)
+        public IList<Organizer> Search(string firstName, string lastName, string email, string phoneNumber, string organizerName,string password)
         {
             var query = mainDbContext.Organizers.AsQueryable();
 
@@ -26,6 +26,8 @@ namespace DomainService.Operations
                 query = mainDbContext.Organizers.Where(x => x.PhoneNumber == phoneNumber);
             if (!string.IsNullOrEmpty(organizerName))
                 query = mainDbContext.Organizers.Where(x => x.OrganizerName == organizerName);
+            if (!string.IsNullOrEmpty(password))
+                query = mainDbContext.Organizers.Where(x => x.Password == password);
 
             return query.ToList();
 
@@ -40,7 +42,7 @@ namespace DomainService.Operations
             return organizer;
         }
 
-        public void Create(string firstName, string lastName, string email, string phoneNumber, string organizerName)
+        public void Create(string firstName, string lastName, string email, string phoneNumber, string organizerName,string password)
         {
             #region Validations
 
@@ -60,12 +62,13 @@ namespace DomainService.Operations
             organizer.Email = email;
             organizer.PhoneNumber = phoneNumber;
             organizer.OrganizerName = organizerName;
+            organizer.Password = password;
 
             mainDbContext.Organizers.Add(organizer);
             mainDbContext.SaveChanges();
         }
 
-        public void Update(int id, string firstName, string lastName, string email, string phoneNumber, string organizerName)
+        public void Update(int id, string firstName, string lastName, string email, string phoneNumber, string organizerName,string password)
         {
             #region Validations
 
@@ -80,6 +83,7 @@ namespace DomainService.Operations
             organizer.Email = email;
             organizer.PhoneNumber = phoneNumber;
             organizer.OrganizerName = organizerName;
+            organizer.Password = password;
 
             mainDbContext.SaveChanges();
         }

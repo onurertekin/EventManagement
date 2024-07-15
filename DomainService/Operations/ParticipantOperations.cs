@@ -11,7 +11,7 @@ namespace DomainService.Operations
             this.mainDbContext = mainDbContext;
         }
 
-        public IList<Participant> Search(int eventId, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate)
+        public IList<Participant> Search(int eventId, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate, string password)
         {
             var query = mainDbContext.Participants.AsQueryable();
 
@@ -27,6 +27,8 @@ namespace DomainService.Operations
                 query = mainDbContext.Participants.Where(x => x.PhoneNumber == phoneNumber);
             if (registeredDate != default(DateTime))
                 query = mainDbContext.Participants.Where(x => x.RegisteredDate == registeredDate);
+            if (!string.IsNullOrEmpty(password))
+                query = mainDbContext.Participants.Where(x => x.Password == password);
 
             return query.ToList();
         }
@@ -40,7 +42,7 @@ namespace DomainService.Operations
             return participant;
         }
 
-        public void Create(int eventId, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate)
+        public void Create(int eventId, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate,string password)
         {
             #region Validations
 
@@ -63,12 +65,13 @@ namespace DomainService.Operations
             participant.Email = email;
             participant.PhoneNumber = phoneNumber;
             participant.RegisteredDate = registeredDate;
+            participant.Password = password;
 
             mainDbContext.Participants.Add(participant);
             mainDbContext.SaveChanges();
         }
 
-        public void Update(int id, int eventId, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate)
+        public void Update(int id, int eventId, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate,string password)
         {
             #region Validations
             var participant = mainDbContext.Participants.Where(x => x.Id == id).SingleOrDefault();
@@ -91,6 +94,7 @@ namespace DomainService.Operations
             participant.Email = email;
             participant.PhoneNumber = phoneNumber;
             participant.RegisteredDate = registeredDate;
+            participant.Password = password;
 
             mainDbContext.SaveChanges();
 
