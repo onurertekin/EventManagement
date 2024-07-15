@@ -12,7 +12,7 @@ namespace DomainService.Operations
             this.mainDbContext = mainDbContext;
         }
 
-        public List<Organizer> Search(string firstName, string lastName, string email, string phoneNumber, string organizerName)
+        public IList<Organizer> Search(string firstName, string lastName, string email, string phoneNumber, string organizerName)
         {
             var query = mainDbContext.Organizers.AsQueryable();
 
