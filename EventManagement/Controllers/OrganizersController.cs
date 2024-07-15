@@ -38,7 +38,7 @@ namespace Host.Controllers
             return new JsonResult(response);
         }
 
-        [HttpGet("id")]
+        [HttpGet("{id}")]
         public ActionResult<GetSingleOrganizerResponse> GetSingle(int id)
         {
             var organizer = organizerOperations.GetSingle(id);
@@ -60,13 +60,13 @@ namespace Host.Controllers
             organizerOperations.Create(request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName);
         }
 
-        [HttpPut("id")]
+        [HttpPut("{id}")]
         public void Update([FromBody] UpdateOrganizerRequest request, int id)
         {
             organizerOperations.Update(id, request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName);
         }
 
-        [HttpDelete("id")]
+        [HttpDelete("{id}")]
         public void Delete(int id)
         {
             organizerOperations.Delete(id);

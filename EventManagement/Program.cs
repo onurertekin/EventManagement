@@ -38,6 +38,8 @@ namespace EventManagement
 
             #region Registirations
             builder.Services.AddTransient<OrganizerOperations>();
+            builder.Services.AddTransient<EventOperations>();
+            builder.Services.AddTransient<ParticipantOperations>();
             #endregion
 
 
