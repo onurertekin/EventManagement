@@ -2,15 +2,18 @@
 using DatabaseModel.Entities;
 using DomainService.Exceptions;
 using DomainService.Base;
+using Microsoft.EntityFrameworkCore;
 
 namespace DomainService.Operations
 {
     public class EventOperations : DbContextHelper
     {
         private readonly MainDbContext mainDbContext;
-        public EventOperations(MainDbContext mainDbContext) : base(mainDbContext)
+        private readonly EMailOperations emailOperations;
+        public EventOperations(MainDbContext mainDbContext, EMailOperations emailOperations) : base(mainDbContext)
         {
             this.mainDbContext = mainDbContext;
+            this.emailOperations = emailOperations;
         }
 
         public IList<Event> Search(int organizerId, string name, string description, string location, DateTime startDate, DateTime endDate, DateTime createdOn, DateTime updatedOn)
@@ -82,6 +85,7 @@ namespace DomainService.Operations
 
             UpdateEntity(_event);
         }
+
         public void Delete(int id)
         {
             #region Validations
@@ -90,10 +94,44 @@ namespace DomainService.Operations
             if (_event == null)
                 throw new BusinessException(404, "Silincek kayıt bulunamadı.");
 
+            if (!_event.IsCancelled)
+                throw new BusinessException(404, "Sadece iptal edilecek eventler silinebilir.");
+
             #endregion
 
             DeleteEntity(_event);
+        }
 
+        public async Task Cancel(int id)
+        {
+            #region Validations
+
+            var @event = mainDbContext.Events.Include(x => x.Participants).Where(x => x.Id == id).SingleOrDefault();
+            if (@event == null)
+                throw new BusinessException(404, "Silincek kayıt bulunamadı.");
+
+            if (@event.IsCancelled)
+                throw new BusinessException(404, "Bu event zaten iptal edilmiş.");
+
+            #endregion
+
+            @event.IsCancelled = true;
+            UpdateEntity(@event);
+
+            #region Send Cancellation EMail to participants
+
+            string subject = $"ETKİNLİK İPTAL: {@event.Name}";
+            string body = $"Sevgili #ParticipantName#, <br/><br/> Etkinlik iptal edilmiştir.. #EventName# etkinliğinizin başlangıç tarihi : #EventStartDate#.<br/><br/> <br/>Event Management Team ";
+
+            foreach (var participant in @event.Participants)
+            {
+                string messageBody = body.Replace("#ParticipantName#", participant.FirstName + " " + participant.LastName);
+                messageBody = messageBody.Replace("#EventName#", @event.Name);
+                messageBody = messageBody.Replace("#EventStartDate#", @event.StartDate.ToLongDateString());
+                await emailOperations.SendEmailAsync(participant.Email, subject, messageBody);
+            }
+
+            #endregion
         }
     }
 }

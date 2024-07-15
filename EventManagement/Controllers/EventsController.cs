@@ -84,5 +84,13 @@ namespace Host.Controllers
         {
             eventOperations.Delete(id);
         }
+
+
+        [HttpPut("{id}/cancel")]
+        [Authorizable]
+        public async Task Cancel(int id)
+        {
+            await eventOperations.Cancel(id);
+        }
     }
 }

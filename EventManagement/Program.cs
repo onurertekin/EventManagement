@@ -1,11 +1,9 @@
-
-using Castle.Core.Configuration;
 using DatabaseModel;
+using DomainService.Config;
 using DomainService.Operations;
 using Host.Helpers.Swagger;
 using Host.Middlewares;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace EventManagement
 {
@@ -13,14 +11,18 @@ namespace EventManagement
     {
         public static void Main(string[] args)
         {
+            var builder = WebApplication.CreateBuilder(args);
+
+            #region Config
 
             var configurationBuilder = new ConfigurationBuilder().AddJsonFile("appsettings.json");
             var configuration = configurationBuilder.Build();
 
-            var builder = WebApplication.CreateBuilder(args);
             builder.WebHost.UseConfiguration(configuration);
 
-            // Add services to the container.
+            builder.Services.Configure<SmtpConfig>(configuration.GetSection("Smtp"));
+
+            #endregion
 
             builder.Services.AddControllers();
 
@@ -36,7 +38,6 @@ namespace EventManagement
 
             #endregion
 
-
             #region EntityFramework
 
             string connectionString = configuration.GetValue<string>("ConnectionStrings:DefaultConnection");
@@ -51,10 +52,10 @@ namespace EventManagement
             builder.Services.AddTransient<EventOperations>();
             builder.Services.AddTransient<ParticipantOperations>();
             builder.Services.AddTransient<AuthenticationOperations>();
+            builder.Services.AddTransient<JobOperations>();
+            builder.Services.AddTransient<EMailOperations>();
 
             #endregion
-
-
 
             var app = builder.Build();
 
