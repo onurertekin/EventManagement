@@ -1,6 +1,7 @@
 ﻿using Contract.Request.Participant;
 using Contract.Response.Participant;
 using DomainService.Operations;
+using Host.Filter;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Host.Controllers
@@ -16,6 +17,7 @@ namespace Host.Controllers
         }
 
         [HttpGet]
+        [Authorizable]
         public ActionResult<SearchParticipantResponse> Search([FromQuery] SearchParticipantRequest request)
         {
             var participants = participantOperations.Search(request.eventId, request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate, request.password);
@@ -39,6 +41,7 @@ namespace Host.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorizable]
         public ActionResult<GetSingleParticipantResponse> GetSingle(int id)
         {
             var participant = participantOperations.GetSingle(id);
@@ -58,18 +61,21 @@ namespace Host.Controllers
         }
 
         [HttpPost]
+        [Authorizable]
         public void Create([FromBody] CreateParticipantRequest request)
         {
             participantOperations.Create(request.eventId, request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate, request.password);
         }
 
         [HttpPut("{id}")]
+        [Authorizable]
         public void Update([FromBody] UpdateParticipantRequest request, int id)
         {
             participantOperations.Update(id, request.eventId, request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate, request.password);
         }
 
         [HttpDelete("{id}")]
+        [Authorizable]
         public void Delete(int id)
         {
             participantOperations.Delete(id);

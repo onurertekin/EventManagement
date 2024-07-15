@@ -1,5 +1,6 @@
 ﻿using DatabaseModel;
 using DatabaseModel.Entities;
+using DomainService.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -41,7 +42,7 @@ namespace DomainService.Operations
         {
             var _event = mainDbContext.Events.Where(x => x.Id == id).SingleOrDefault();
             if (_event == null)
-                throw new Exception("Event bulunamadı.");
+                throw new BusinessException(404,"Event bulunamadı.");
 
             return _event;
         }
@@ -51,7 +52,7 @@ namespace DomainService.Operations
             #region Validations
             var currentlyOrganizer = mainDbContext.Organizers.Where(x => x.Id == organizerId).SingleOrDefault();
             if (currentlyOrganizer == null)
-                throw new Exception("Böyle bir organizatör bulunamadı.");
+                throw new BusinessException(404, "Böyle bir organizatör bulunamadı.");
             #endregion
 
             Event _event = new Event();
@@ -73,7 +74,7 @@ namespace DomainService.Operations
 
             var _event = mainDbContext.Events.Where(x => x.Id == id).SingleOrDefault();
             if (_event == null)
-                throw new Exception("Güncellenecek kayıt bulunamadı.");
+                throw new BusinessException(404, "Güncellenecek kayıt bulunamadı.");
 
             #endregion
             _event.OrganizerId = organizerId;
@@ -92,7 +93,7 @@ namespace DomainService.Operations
 
             var _event = mainDbContext.Events.Where(x => x.Id == id).SingleOrDefault();
             if (_event == null)
-                throw new Exception("Silincek kayıt bulunamadı.");
+                throw new BusinessException(404,"Silincek kayıt bulunamadı.");
 
             #endregion
 

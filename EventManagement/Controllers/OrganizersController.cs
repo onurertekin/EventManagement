@@ -1,6 +1,7 @@
 ﻿using Contract.Request.Organizers;
 using Contract.Response.Organizers;
 using DomainService.Operations;
+using Host.Filter;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Host.Controllers
@@ -18,9 +19,10 @@ namespace Host.Controllers
 
 
         [HttpGet]
+        [Authorizable]
         public ActionResult<SearchOrganizersResponse> Search([FromQuery] SearchOrganizersRequest request)
         {
-            var organizers = organizerOperations.Search(request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName,request.password);
+            var organizers = organizerOperations.Search(request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName, request.password);
             SearchOrganizersResponse response = new SearchOrganizersResponse();
             foreach (var organizer in organizers)
             {
@@ -40,6 +42,7 @@ namespace Host.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorizable]
         public ActionResult<GetSingleOrganizerResponse> GetSingle(int id)
         {
             var organizer = organizerOperations.GetSingle(id);
@@ -57,18 +60,21 @@ namespace Host.Controllers
         }
 
         [HttpPost]
+        [Authorizable]
         public void Create([FromBody] CreateOrganizerRequest request)
         {
-            organizerOperations.Create(request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName,request.password);
+            organizerOperations.Create(request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName, request.password);
         }
 
         [HttpPut("{id}")]
+        [Authorizable]
         public void Update([FromBody] UpdateOrganizerRequest request, int id)
         {
-            organizerOperations.Update(id, request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName,request.password);
+            organizerOperations.Update(id, request.firstName, request.lastName, request.email, request.phoneNumber, request.organizerName, request.password);
         }
 
         [HttpDelete("{id}")]
+        [Authorizable]
         public void Delete(int id)
         {
             organizerOperations.Delete(id);

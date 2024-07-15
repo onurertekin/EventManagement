@@ -1,6 +1,5 @@
 ﻿using Contract.Request.Authentication;
 using Contract.Response.AuthenticationResponse;
-using DatabaseModel;
 using DomainService.Operations;
 using Microsoft.AspNetCore.Mvc;
 

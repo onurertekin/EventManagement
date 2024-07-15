@@ -1,5 +1,6 @@
 ﻿using DatabaseModel;
 using DatabaseModel.Entities;
+using DomainService.Exceptions;
 
 namespace DomainService.Operations
 {
@@ -37,7 +38,7 @@ namespace DomainService.Operations
         {
             var organizer = mainDbContext.Organizers.Where(x => x.Id == id).SingleOrDefault();
             if (organizer == null)
-                throw new Exception("Organizer bulunamadı.");
+                throw new BusinessException(404, "Organizer bulunamadı.");
 
             return organizer;
         }
@@ -48,11 +49,11 @@ namespace DomainService.Operations
 
             var currentlyEmail = mainDbContext.Organizers.Where(x => x.Email == email).SingleOrDefault();
             if (currentlyEmail != null)
-                throw new Exception("Böyle bir email zaten mevcut.");
+                throw new BusinessException(404,"Böyle bir email zaten mevcut.");
 
             var currentlyPhoneNumber = mainDbContext.Organizers.Where(x => x.PhoneNumber == phoneNumber).SingleOrDefault();
             if (currentlyPhoneNumber != null)
-                throw new Exception("Böyle bir telefon numarası zaten mevcut");
+                throw new BusinessException(404,"Böyle bir telefon numarası zaten mevcut");
 
             #endregion
 
@@ -74,7 +75,7 @@ namespace DomainService.Operations
 
             var organizer = mainDbContext.Organizers.Where(x => x.Id == id).SingleOrDefault();
             if (organizer == null)
-                throw new Exception("Güncellenicek kayıt bulunamadı.");
+                throw new BusinessException(404,"Güncellenicek kayıt bulunamadı.");
 
             #endregion
 
@@ -92,7 +93,7 @@ namespace DomainService.Operations
         {
             var organizer = mainDbContext.Organizers.Where(x => x.Id == id).SingleOrDefault();
             if (organizer == null)
-                throw new Exception("Silinecek kayıt bulunamadı.");
+                throw new BusinessException(404,"Silinecek kayıt bulunamadı.");
 
             mainDbContext.Organizers.Remove(organizer);
             mainDbContext.SaveChanges();

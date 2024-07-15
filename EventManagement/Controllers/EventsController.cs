@@ -1,6 +1,7 @@
 ﻿using Contract.Request.Events;
 using Contract.Response.Events;
 using DomainService.Operations;
+using Host.Filter;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Host.Controllers
@@ -17,6 +18,7 @@ namespace Host.Controllers
         }
 
         [HttpGet]
+        [Authorizable]
         public ActionResult<SearchEventsResponse> Search([FromQuery] SearchEventsRequest request)
         {
             var events = eventOperations.Search(request.organizerId, request.name, request.description, request.location, request.startDate, request.endDate, request.createdOn, request.updatedOn);
@@ -43,6 +45,7 @@ namespace Host.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorizable]
         public ActionResult<GetSingleEventResponse> GetSingle(int id)
         {
             var _event = eventOperations.GetSingle(id);
@@ -62,18 +65,21 @@ namespace Host.Controllers
         }
 
         [HttpPost]
+        [Authorizable]
         public void Create([FromBody] CreateEventRequest request)
         {
             eventOperations.Create(request.organizerId, request.name, request.description, request.location, request.startDate, request.endDate);
         }
 
         [HttpPut("{id}")]
+        [Authorizable]
         public void Update(int id, [FromBody] UpdateEventRequest request)
         {
             eventOperations.Update(id, request.organizerId, request.name, request.description, request.location, request.startDate, request.endDate);
         }
 
         [HttpDelete("{id}")]
+        [Authorizable]
         public void Delete(int id)
         {
             eventOperations.Delete(id);

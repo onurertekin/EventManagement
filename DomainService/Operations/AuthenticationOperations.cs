@@ -1,12 +1,9 @@
 ﻿using DatabaseModel;
+using DomainService.Exceptions;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DomainService.Operations
 {
@@ -24,7 +21,7 @@ namespace DomainService.Operations
 
             var user = mainDbContext.Participants.Where(x => x.Email == email).FirstOrDefault();
             if (user == null)
-                throw new Exception("Kullanıcı bulunamadı.");
+                throw new BusinessException(404,"Kullanıcı bulunamadı.");
 
             #endregion
 

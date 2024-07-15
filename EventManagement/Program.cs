@@ -2,6 +2,7 @@
 using Castle.Core.Configuration;
 using DatabaseModel;
 using DomainService.Operations;
+using Host.Helpers.Swagger;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -21,9 +22,18 @@ namespace EventManagement
             // Add services to the container.
 
             builder.Services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
+            #region Swagger
+
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            builder.Services.AddSwaggerGen(c =>
+            {
+                c.OperationFilter<TokenParameterFilter>();
+                c.CustomSchemaIds((type) => type.FullName.Replace("+", "_"));
+                c.CustomOperationIds(e => $"{e.ActionDescriptor.RouteValues["controller"]}{e.HttpMethod}{e.RelativePath}");
+            });
+
+            #endregion
 
 
             #region EntityFramework
