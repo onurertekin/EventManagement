@@ -16,23 +16,27 @@ namespace DomainService.Operations
             this.emailOperations = emailOperations;
         }
 
-        public IList<Event> Search(int organizerId, string name, string description, string location, DateTime startDate, DateTime endDate, DateTime createdOn, DateTime updatedOn)
+        public IList<Event> Search(int? organizerId, string name, string description, string location, DateTime? startDate, DateTime? endDate)
         {
             var query = mainDbContext.Events.AsQueryable();
+
+            if (organizerId.HasValue)
+                query = mainDbContext.Events.Where(x => x.OrganizerId == organizerId);
+
             if (!string.IsNullOrEmpty(name))
                 query = mainDbContext.Events.Where(x => x.Name == name);
+
             if (!string.IsNullOrEmpty(description))
                 query = mainDbContext.Events.Where(x => x.Description == description);
+
             if (!string.IsNullOrEmpty(location))
                 query = mainDbContext.Events.Where(x => x.Location == location);
-            if (startDate != default(DateTime))
+
+            if (startDate.HasValue)
                 query = mainDbContext.Events.Where(x => x.StartDate == startDate);
-            if (endDate != default(DateTime))
+
+            if (endDate.HasValue)
                 query = mainDbContext.Events.Where(x => x.EndDate == endDate);
-            if (createdOn != default(DateTime))
-                query = mainDbContext.Events.Where(x => x.CreatedOn == createdOn);
-            if (updatedOn != default(DateTime))
-                query = mainDbContext.Events.Where(x => x.UpdatedOn == updatedOn);
 
             return query.ToList();
         }
@@ -132,6 +136,24 @@ namespace DomainService.Operations
             }
 
             #endregion
+        }
+
+        public async Task Join(int id, int participantId)
+        {
+            var @event = mainDbContext.Events.Where(x => x.Id == id).SingleOrDefault();
+            if (@event == null)
+                throw new BusinessException(404, "Event Bulunamadı");
+
+            var participant = mainDbContext.Participants.Where(x => x.Id == id).SingleOrDefault();
+            if (participant == null)
+                throw new BusinessException(404, "Participant Bulunamadı");
+
+            var alreadyJoined = @event.Participants.Any(p => p.Id == participantId);
+            if (alreadyJoined)
+                throw new BusinessException(404, "Bu evente zaten katılmışsınız");
+
+            @event.Participants.Add(participant);
+            UpdateEntity(@event);
         }
     }
 }

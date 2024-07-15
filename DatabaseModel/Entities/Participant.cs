@@ -2,8 +2,13 @@
 {
     public class Participant
     {
+        public Participant()
+        {
+            Events = new HashSet<Event>();
+        }
+
         public int Id { get; set; }
-        public int EventId { get; set; }
+        //public int EventId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
@@ -13,7 +18,7 @@
 
         #region Navigation Properties
 
-        public virtual Event Event { get; set; }
+        public virtual ISet<Event> Events { get; set; }
 
         #endregion
     }

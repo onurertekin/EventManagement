@@ -20,14 +20,14 @@ namespace Host.Controllers
         [Authorizable]
         public ActionResult<SearchParticipantResponse> Search([FromQuery] SearchParticipantRequest request)
         {
-            var participants = participantOperations.Search(request.eventId, request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate, request.password);
-            SearchParticipantResponse response = new SearchParticipantResponse();
+            var participants = participantOperations.Search(request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate, request.password);
+
+            var response = new SearchParticipantResponse();
             foreach (var participant in participants)
             {
                 response.participants.Add(new SearchParticipantResponse.Participants()
                 {
                     id = participant.Id,
-                    eventId = participant.EventId,
                     firstName = participant.FirstName,
                     lastName = participant.LastName,
                     email = participant.Email,
@@ -47,7 +47,6 @@ namespace Host.Controllers
             var participant = participantOperations.GetSingle(id);
 
             var response = new GetSingleParticipantResponse();
-            response.eventId = participant.Id;
             response.id = participant.Id;
             response.firstName = participant.FirstName;
             response.lastName = participant.LastName;
@@ -64,14 +63,14 @@ namespace Host.Controllers
         [Authorizable]
         public void Create([FromBody] CreateParticipantRequest request)
         {
-            participantOperations.Create(request.eventId, request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate, request.password);
+            participantOperations.Create(request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate, request.password);
         }
 
         [HttpPut("{id}")]
         [Authorizable]
         public void Update([FromBody] UpdateParticipantRequest request, int id)
         {
-            participantOperations.Update(id, request.eventId, request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate, request.password);
+            participantOperations.Update(id, request.firstName, request.lastName, request.email, request.phoneNumber, request.registeredDate, request.password);
         }
 
         [HttpDelete("{id}")]

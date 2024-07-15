@@ -22,7 +22,6 @@
 
         public virtual Organizer Organizer { get; set; }
         public virtual ISet<Participant> Participants { get; set; }
-
         #endregion
     }
 }

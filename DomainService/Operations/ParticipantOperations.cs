@@ -12,12 +12,10 @@ namespace DomainService.Operations
             this.mainDbContext = mainDbContext;
         }
 
-        public IList<Participant> Search(int eventId, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate, string password)
+        public IList<Participant> Search(string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate, string password)
         {
             var query = mainDbContext.Participants.AsQueryable();
 
-            if (eventId != null && eventId != 0)
-                query = mainDbContext.Participants.Where(x => x.EventId == eventId);
             if (!string.IsNullOrEmpty(firstName))
                 query = mainDbContext.Participants.Where(x => x.FirstName == firstName);
             if (!string.IsNullOrEmpty(lastName))
@@ -43,16 +41,14 @@ namespace DomainService.Operations
             return participant;
         }
 
-        public void Create(int eventId, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate, string password)
+        public void Create(string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate, string password)
         {
             #region Validations
 
-            var currentlyEvent = mainDbContext.Events.Where(x => x.Id == eventId).SingleOrDefault();
-            if (currentlyEvent == null)
-                throw new Exception("Böyle bir event bulunamadı.");
             var currentlyEmail = mainDbContext.Participants.Where(x => x.Email == email).SingleOrDefault();
             if (currentlyEmail != null)
                 throw new Exception("Böyle bir email zaten kayıtlı.");
+
             var currentlyPhoneNumber = mainDbContext.Participants.Where(x => x.PhoneNumber == phoneNumber).SingleOrDefault();
             if (currentlyPhoneNumber != null)
                 throw new Exception("Böyle bir telefon numarası zaten kayıtlı");
@@ -60,7 +56,6 @@ namespace DomainService.Operations
             #endregion
 
             var participant = new Participant();
-            participant.EventId = eventId;
             participant.FirstName = firstName;
             participant.LastName = lastName;
             participant.Email = email;
@@ -71,24 +66,24 @@ namespace DomainService.Operations
             SaveEntity(participant);
         }
 
-        public void Update(int id, int eventId, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate, string password)
+        public void Update(int id, string firstName, string lastName, string email, string phoneNumber, DateTime registeredDate, string password)
         {
             #region Validations
+
             var participant = mainDbContext.Participants.Where(x => x.Id == id).SingleOrDefault();
             if (participant == null)
                 throw new Exception("Güncellenicek bir katılımcı bulunamadı.");
-            var currentlyEvent = mainDbContext.Events.Where(x => x.Id == eventId).SingleOrDefault();
-            if (currentlyEvent == null)
-                throw new Exception("Böyle bir event bulunamadı.");
+
             var currentlyEmail = mainDbContext.Participants.Where(x => x.Email == email).SingleOrDefault();
             if (currentlyEmail != null)
                 throw new Exception("Böyle bir email zaten kayıtlı.");
+
             var currentlyPhoneNumber = mainDbContext.Participants.Where(x => x.PhoneNumber == phoneNumber).SingleOrDefault();
             if (currentlyPhoneNumber != null)
                 throw new Exception("Böyle bir telefon numarası zaten kayıtlı");
 
             #endregion
-            participant.EventId = eventId;
+
             participant.FirstName = firstName;
             participant.LastName = lastName;
             participant.Email = email;

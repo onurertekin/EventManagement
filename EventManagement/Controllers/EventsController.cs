@@ -21,7 +21,7 @@ namespace Host.Controllers
         [Authorizable]
         public ActionResult<SearchEventsResponse> Search([FromQuery] SearchEventsRequest request)
         {
-            var events = eventOperations.Search(request.organizerId, request.name, request.description, request.location, request.startDate, request.endDate, request.createdOn, request.updatedOn);
+            var events = eventOperations.Search(request.organizerId, request.name, request.description, request.location, request.startDate, request.endDate);
             var response = new SearchEventsResponse();
 
             foreach (var _event in events)
@@ -91,6 +91,14 @@ namespace Host.Controllers
         public async Task Cancel(int id)
         {
             await eventOperations.Cancel(id);
+        }
+
+
+        [HttpPut("{id}/join")]
+        [Authorizable]
+        public async Task Join(int id, int participantId)
+        {
+            await eventOperations.Join(id, participantId);
         }
     }
 }
